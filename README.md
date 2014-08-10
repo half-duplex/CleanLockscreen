@@ -13,7 +13,7 @@ Building
 
 You will need Android Studio and Android API 19 installed.
 * Create the folder ANDROID_SDK/add-ons/addon-xposed_bridge-rovo89-19/
-* Download the Xposed Bridge *API* to libs/ your newly created addon folder
+* Download the Xposed Bridge **API** to libs/ in your newly created addon folder
 * In your new addon folder, paste the following (edited to your version) into manifest.ini
 ```
 name=Xposed Bridge
