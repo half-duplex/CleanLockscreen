@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CleanLockscreen.iml" filepath="$PROJECT_DIR$/CleanLockscreen.iml" />
-      <module fileurl="file://$PROJECT_DIR$/LockscreenCleaner.iml" filepath="$PROJECT_DIR$/LockscreenCleaner.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

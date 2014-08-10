@@ -3,9 +3,11 @@ apply plugin: 'com.android.application'
 android {
     //compileSdkVersion 19
     signingConfigs {
-        config {
+        TrevorBergeron {
             keyAlias 'mal'
             storeFile file('/home/mal/sources/android/android-keystore.jks')
+            keyPassword 'WW91IHRob3VnaHQgSSBwdXQgbXkgcGFzc3dvcmQgaW4gZ2l0LCBkaWRuJ3QgeW91Pw'
+            storePassword 'WW91IHRob3VnaHQgSSBwdXQgbXkgcGFzc3dvcmQgaW4gZ2l0LCBkaWRuJ3QgeW91Pw'
         }
     }
     compileSdkVersion 'rovo89:Xposed Bridge:19'
@@ -21,6 +23,7 @@ android {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.TrevorBergeron
         }
     }
     productFlavors {
