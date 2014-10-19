@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Clean Lockscreen</string>
+    <string name="app_description">Cleans up the lock screen by removing unneeded elements</string>
+    <string name="pref_remove_letters">Remove letters</string>
+    <string name="pref_remove_letters_summary">Hide dialpad letters (2abc 3def ...)</string>
+    <string name="pref_remove_backspace">Remove backspace button</string>
+    <string name="pref_remove_carrier">Remove carrier label</string>
+    <string name="pref_remove_emergency">Remove emergency call button</string>
+    <string name="pref_remove_emergency_summary">Use at your own risk!</string>
+    <string name="pref_remove_googlenow">Remove Google Now draggable arrow</string>
+    <string name="pref_remove_camera">Remove camera icon</string>
+    <string name="pref_remove_camera_summary">You can still get to the camera</string>
 </resources>

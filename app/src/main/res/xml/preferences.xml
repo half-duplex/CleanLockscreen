@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:key="info_panel"
+        android:selectable="false"
+        android:summary="NOTE: You need to soft-reboot or full reboot your device for changes to take effect" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="remove_letters"
+        android:summary="@string/pref_remove_letters_summary"
+        android:title="@string/pref_remove_letters" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="remove_backspace"
+        android:title="@string/pref_remove_backspace" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="remove_carrier"
+        android:title="@string/pref_remove_carrier" />
+</PreferenceScreen>

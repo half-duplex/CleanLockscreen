@@ -16,8 +16,8 @@ android {
         applicationId 'gd.sec.cleanlockscreen'
         minSdkVersion 15
         targetSdkVersion 19
-        versionCode 12
-        versionName '1.2'
+        versionCode 13
+        versionName '1.3'
     }
     buildTypes {
         release {
