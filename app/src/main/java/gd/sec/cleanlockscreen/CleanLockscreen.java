@@ -10,8 +10,12 @@
 package gd.sec.cleanlockscreen;
 
 import android.content.res.XModuleResources;
+import android.content.res.XResources;
 import android.view.Gravity;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
@@ -26,70 +30,195 @@ import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class CleanLockscreen implements IXposedHookZygoteInit, IXposedHookInitPackageResources, IXposedHookLoadPackage {
+    private static String packageName = null;
     private static String MODULE_PATH = null;
     private static XSharedPreferences prefs;
 
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
+        XposedBridge.log("CleanLockscreen initZygote");
+
+        if(android.os.Build.VERSION.SDK_INT<=20)
+            packageName = "com.android.keyguard";
+        else
+            packageName = "com.android.systemui";
+
         MODULE_PATH = startupParam.modulePath;
         prefs = new XSharedPreferences(CleanLockscreen.class.getPackage().getName());
+
+        // Remove emergency call text
+        if (prefs.getBoolean("remove_emergency", false)) {
+            XResources.setSystemWideReplacement("android:string/lockscreen_emergency_call", "");
+        }
     }
 
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
-        if (!resparam.packageName.equals("com.android.keyguard"))
+        //XposedBridge.log("CleanLockscreen handleInitPackageResources check " + resparam.packageName);
+
+        if(!resparam.packageName.equals(packageName))
             return;
 
-        XposedBridge.log("CleanLockscreen: Setting resources");
+        XposedBridge.log("CleanLockscreen handleInitPackageResources "+packageName);
 
         // Remove letters on numpad
         if (prefs.getBoolean("remove_letters", true)) {
-            resparam.res.setReplacement("com.android.keyguard:array/lockscreen_num_pad_klondike", new String[0]);
+            resparam.res.setReplacement(packageName, "array", "lockscreen_num_pad_klondike", new String[0]);
         }
 
         // Mess with layouts and styles
-        resparam.res.hookLayout("com.android.keyguard", "layout", "keyguard_pin_view", new XC_LayoutInflated() {
-            @Override
-            public void handleLayoutInflated(XC_LayoutInflated.LayoutInflatedParam liparam) throws Throwable {
-                // Remove backspace button
-                if (prefs.getBoolean("remove_backspace", true)) {
-                    ImageButton deleteButton = (ImageButton) liparam.view.findViewById(
-                            liparam.res.getIdentifier("delete_button", "id", "com.android.keyguard"));
-                    XposedBridge.log("CleanLockscreen: deleteButton=" + deleteButton.toString());
-                    deleteButton.setVisibility(ImageButton.GONE);
-                }
+        if(prefs.getBoolean("remove_backspace", true)||(prefs.getBoolean("remove_letters", true)&&android.os.Build.VERSION.SDK_INT<=20)) {
+            resparam.res.hookLayout(packageName, "layout", "keyguard_pin_view", new XC_LayoutInflated() {
+                @Override
+                public void handleLayoutInflated(XC_LayoutInflated.LayoutInflatedParam liparam)
+                        throws Throwable {
+                    // Remove backspace button
+                    if (prefs.getBoolean("remove_backspace", true)) {
+                        ImageButton deleteButton = (ImageButton) liparam.view.findViewById(
+                                liparam.res.getIdentifier("delete_button", "id", packageName));
+                        deleteButton.setVisibility(ImageButton.GONE);
+                    }
 
-                // Center numbers on each numpad key
-                if (prefs.getBoolean("remove_letters", true)) {
-                    for (int i = 0; i < 10; i++) {
-                        TextView key = (TextView) liparam.view.findViewById(
-                                liparam.res.getIdentifier("key" + Integer.toString(i), "id", "com.android.keyguard"));
-                        key.setPadding(key.getPaddingRight(), key.getPaddingTop(), key.getPaddingRight(), key.getPaddingBottom());
-                        key.setGravity(Gravity.CENTER);
+                    // Center numbers on each numpad key
+                    if (prefs.getBoolean("remove_letters", true) && android.os.Build.VERSION.SDK_INT <= 20) {
+                        for (int i = 0; i < 10; i++) {
+                            TextView key = (TextView) liparam.view.findViewById(
+                                    liparam.res.getIdentifier("key" + Integer.toString(i), "id", packageName));
+                            key.setPadding(key.getPaddingRight(), key.getPaddingTop(), key.getPaddingRight(), key.getPaddingBottom());
+                            key.setGravity(Gravity.CENTER);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+
+        // Remove carrier label for api>20
+        if((prefs.getBoolean("remove_carrier", true)
+                ||prefs.getBoolean("remove_icons", false)
+                ||prefs.getBoolean("remove_user", false))&&android.os.Build.VERSION.SDK_INT>20) {
+            resparam.res.hookLayout(packageName, "layout", "keyguard_status_bar", new XC_LayoutInflated() {
+                @Override
+                public void handleLayoutInflated(XC_LayoutInflated.LayoutInflatedParam liparam)
+                        throws Throwable {
+                    if(prefs.getBoolean("remove_carrier", true)) {
+                        TextView carrierLabel = (TextView) liparam.view.findViewById(
+                                liparam.res.getIdentifier("keyguard_carrier_text", "id", packageName));
+                        carrierLabel.setVisibility(TextView.GONE);
+                    }
+                    if(prefs.getBoolean("remove_icons", false)) {
+                        LinearLayout systemIcons = (LinearLayout) liparam.view.findViewById(
+                                liparam.res.getIdentifier("system_icons_super_container", "id", packageName));
+                        systemIcons.setVisibility(LinearLayout.GONE);
+                    }
+                    if(prefs.getBoolean("remove_user", false)) {
+                        FrameLayout userSwitcher = (FrameLayout) liparam.view.findViewById(
+                                liparam.res.getIdentifier("multi_user_switch", "id", packageName));
+                        userSwitcher.setVisibility(FrameLayout.GONE);
+                    }
+                }
+            });
+        }
 
         // Re-center pin dots textView
-        if (prefs.getBoolean("remove_backspace", true)) {
+        if (prefs.getBoolean("remove_backspace", true)&&android.os.Build.VERSION.SDK_INT<=20) {
             XModuleResources modRes = XModuleResources.createInstance(MODULE_PATH, null);
-            resparam.res.setReplacement("com.android.keyguard:dimen/keyguard_lockscreen_pin_margin_left",
+            resparam.res.setReplacement(packageName, "dimen", "keyguard_lockscreen_pin_margin_left",
                     modRes.fwd(R.dimen.keyguard_lockscreen_pin_margin_left)
             );
         }
 
-        XposedBridge.log("CleanLockscreen: Setting resources completed");
+        // Remove icons
+        if(prefs.getBoolean("remove_phone", true)) {
+            XModuleResources modRes = XModuleResources.createInstance(MODULE_PATH, null);
+            resparam.res.setReplacement(packageName, "drawable", "ic_phone_24dp",
+                    modRes.fwd(R.drawable.empty)
+            );
+        }
+        if(prefs.getBoolean("remove_lock", true)) {
+            XModuleResources modRes = XModuleResources.createInstance(MODULE_PATH, null);
+            resparam.res.setReplacement(packageName, "drawable", "ic_lock_24dp",
+                    modRes.fwd(R.drawable.empty)
+            );
+        }
+        if(prefs.getBoolean("remove_camera", true)) {
+            XModuleResources modRes = XModuleResources.createInstance(MODULE_PATH, null);
+            resparam.res.setReplacement(packageName, "drawable", "ic_camera_alt_24dp",
+                    modRes.fwd(R.drawable.empty)
+            );
+        }
+        // Status area
+        if(prefs.getBoolean("remove_status", true)) {
+            resparam.res.hookLayout(packageName, "layout", "keyguard_bottom_area", new XC_LayoutInflated() {
+                @Override
+                public void handleLayoutInflated(XC_LayoutInflated.LayoutInflatedParam liparam)
+                        throws Throwable {
+                    TextView statusText = (TextView) liparam.view.findViewById(
+                            liparam.res.getIdentifier("keyguard_indication_text", "id", packageName));
+                    statusText.setMaxWidth(0);
+                    statusText.setMaxHeight(0);
+                }
+            });
+        }
+
+        // Time
+        if(prefs.getBoolean("remove_time", false)
+                ||prefs.getBoolean("remove_owner", false)) {
+            resparam.res.hookLayout(packageName, "layout", "keyguard_status_view", new XC_LayoutInflated() {
+                @Override
+                public void handleLayoutInflated(XC_LayoutInflated.LayoutInflatedParam liparam)
+                        throws Throwable {
+                    if (prefs.getBoolean("remove_time", false)) {
+                        TextView clockView = (TextView) liparam.view.findViewById(
+                                liparam.res.getIdentifier("clock_view", "id", packageName));
+                        clockView.setVisibility(TextView.GONE);
+                    }
+                    if (prefs.getBoolean("remove_owner", false)) {
+                        TextView ownerInfo = (TextView) liparam.view.findViewById(
+                                liparam.res.getIdentifier("owner_info", "id", packageName));
+                        ownerInfo.setMaxWidth(0);
+                        ownerInfo.setMaxHeight(0);
+                    }
+                }
+            });
+        }
+
+        // Date/alarm
+        if(prefs.getBoolean("remove_date", false)
+                ||prefs.getBoolean("remove_alarm", false)) {
+            resparam.res.hookLayout(packageName, "layout", "keyguard_status_area", new XC_LayoutInflated() {
+                @Override
+                public void handleLayoutInflated(XC_LayoutInflated.LayoutInflatedParam liparam)
+                        throws Throwable {
+                    if (prefs.getBoolean("remove_date", false)) {
+                        TextView dateView = (TextView) liparam.view.findViewById(
+                                liparam.res.getIdentifier("date_view", "id", packageName));
+                        dateView.setVisibility(TextView.GONE);
+                    }
+                    if (prefs.getBoolean("remove_alarm", false)) {
+                        TextView alarmView = (TextView) liparam.view.findViewById(
+                                liparam.res.getIdentifier("alarm_status", "id", packageName));
+                        // visibility is overwritten by something else
+                        alarmView.setMaxWidth(0);
+                        alarmView.setMaxHeight(0);
+                    }
+                }
+            });
+        }
+
+        XposedBridge.log("CleanLockscreen handleInitPackageResources complete");
     }
 
+    // Remove carrier label for api<=20
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         if (!lpparam.packageName.equals("com.android.keyguard"))
             return;
 
-        XposedBridge.log("CleanLockscreen: Overriding methods");
+        XposedBridge.log("CleanLockscreen handleLoadPackage");
 
         if (prefs.getBoolean("remove_carrier", true)) {
-            XposedHelpers.findAndHookMethod("com.android.keyguard.CarrierText", lpparam.classLoader, "updateCarrierText", "com.android.internal.telephony.IccCardConstants$State", CharSequence.class, CharSequence.class, new XC_MethodReplacement() {
+            XposedHelpers.findAndHookMethod("com.android.keyguard.CarrierText", lpparam.classLoader,
+                    "updateCarrierText", "com.android.internal.telephony.IccCardConstants$State",
+                    CharSequence.class, CharSequence.class, new XC_MethodReplacement() {
                 @Override
                 protected Object replaceHookedMethod(MethodHookParam param) {
                     //((TextView)param.thisObject).setText("Custom carrier text");
@@ -98,6 +227,6 @@ public class CleanLockscreen implements IXposedHookZygoteInit, IXposedHookInitPa
             });
         }
 
-        XposedBridge.log("CleanLockscreen: Overriding methods completed.");
+        XposedBridge.log("CleanLockscreen handleLoadPackage complete");
     }
 }
