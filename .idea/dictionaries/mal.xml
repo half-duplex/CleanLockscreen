@@ -7,6 +7,7 @@
       <w>lpparam</w>
       <w>numpad</w>
       <w>resparam</w>
+      <w>statusbar</w>
       <w>systemui</w>
       <w>xposed</w>
     </words>
