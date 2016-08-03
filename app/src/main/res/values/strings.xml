@@ -24,4 +24,6 @@
     <string name="pref_remove_lock_summary">Dragging still acts normally. Probably 5.0+ only.</string>
     <string name="pref_remove_camera">Remove camera icon</string>
     <string name="pref_remove_camera_summary">Dragging will still start the camera. Probably 5.0+ only.</string>
+    <string name="pref_remove_microphone">Remove microphone icon</string>
+    <string name="pref_remove_microphone_summary">Dragging will still start Google Now. Probably 5.0+ only.</string>
 </resources>

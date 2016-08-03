@@ -69,4 +69,9 @@
         android:key="remove_camera"
         android:title="@string/pref_remove_camera"
         android:summary="@string/pref_remove_camera_summary" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="remove_microphone"
+        android:title="@string/pref_remove_microphone"
+        android:summary="@string/pref_remove_microphone_summary" />
 </PreferenceScreen>

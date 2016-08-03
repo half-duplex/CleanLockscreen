@@ -161,6 +161,13 @@ public class CleanLockscreen implements IXposedHookZygoteInit, IXposedHookInitPa
             );
         }
 
+        // Microphone icon
+        if(prefs.getBoolean("remove_microphone", true)) {
+            resparam.res.setReplacement(packageName, "drawable", "ic_mic_26dp",
+                    modRes.fwd(R.drawable.empty)
+            );
+        }
+
         if(prefs.getBoolean("remove_status", true)) {
             resparam.res.hookLayout(packageName, "layout", "keyguard_bottom_area",
                     new XC_LayoutInflated() {
