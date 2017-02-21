@@ -104,9 +104,10 @@ public class CleanLockscreen implements IXposedHookZygoteInit, IXposedHookInitPa
         }
 
         // Remove carrier label for api>20
-        if((prefs.getBoolean("remove_carrier", true)
-                ||prefs.getBoolean("remove_icons", false)
-                ||prefs.getBoolean("remove_user", false))&&android.os.Build.VERSION.SDK_INT>20) {
+        if(     (      prefs.getBoolean("remove_carrier", true)
+                    || prefs.getBoolean("remove_icons", false)
+                    || prefs.getBoolean("remove_user", false)
+                ) && android.os.Build.VERSION.SDK_INT>20) {
             resparam.res.hookLayout(packageName, "layout", "keyguard_status_bar",
                     new XC_LayoutInflated() {
                 @Override
