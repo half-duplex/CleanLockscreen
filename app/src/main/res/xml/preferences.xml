@@ -1,77 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference
-        android:key="info_panel"
-        android:selectable="false"
-        android:summary="NOTE: You need to soft-reboot or full reboot your device for changes to take effect" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="remove_letters"
-        android:title="@string/pref_remove_letters"
-        android:summary="@string/pref_remove_letters_summary" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="remove_backspace"
-        android:title="@string/pref_remove_backspace" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="remove_time"
-        android:title="@string/pref_remove_time" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="remove_date"
-        android:title="@string/pref_remove_date" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="remove_alarm"
-        android:title="@string/pref_remove_alarm" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="remove_owner"
-        android:title="@string/pref_remove_owner"
-        android:summary="@string/pref_remove_owner_summary" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="remove_carrier"
-        android:title="@string/pref_remove_carrier" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="remove_icons"
-        android:title="@string/pref_remove_icons"
-        android:summary="@string/pref_remove_icons_summary" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="remove_user"
-        android:title="@string/pref_remove_user"
-        android:summary="@string/pref_remove_user_summary" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="remove_emergency"
-        android:title="@string/pref_remove_emergency"
-        android:summary="@string/pref_remove_emergency_summary" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="remove_status"
-        android:title="@string/pref_remove_status"
-        android:summary="@string/pref_remove_status_summary" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="remove_phone"
-        android:title="@string/pref_remove_phone"
-        android:summary="@string/pref_remove_phone_summary" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="remove_lock"
-        android:title="@string/pref_remove_lock"
-        android:summary="@string/pref_remove_lock_summary" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="remove_camera"
-        android:title="@string/pref_remove_camera"
-        android:summary="@string/pref_remove_camera_summary" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="remove_microphone"
-        android:title="@string/pref_remove_microphone"
-        android:summary="@string/pref_remove_microphone_summary" />
+        android:key="restart_systemui"
+        android:title="@string/pref_restart_systemui"
+        android:summary="@string/pref_restart_systemui_summary" />
+    <PreferenceCategory
+        android:title="@string/pref_removable_elements">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remove_letters"
+            android:title="@string/pref_remove_letters"
+            android:summary="@string/pref_remove_letters_summary" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remove_backspace"
+            android:title="@string/pref_remove_backspace" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="remove_time"
+            android:title="@string/pref_remove_time" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="remove_date"
+            android:title="@string/pref_remove_date" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="remove_alarm"
+            android:title="@string/pref_remove_alarm" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="remove_owner"
+            android:title="@string/pref_remove_owner"
+            android:summary="@string/pref_remove_owner_summary" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remove_carrier"
+            android:title="@string/pref_remove_carrier" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="remove_icons"
+            android:title="@string/pref_remove_icons"
+            android:summary="@string/pref_remove_icons_summary" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="remove_user"
+            android:title="@string/pref_remove_user"
+            android:summary="@string/pref_remove_user_summary" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="remove_emergency"
+            android:title="@string/pref_remove_emergency"
+            android:summary="@string/pref_remove_emergency_summary" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remove_status"
+            android:title="@string/pref_remove_status"
+            android:summary="@string/pref_remove_status_summary" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remove_phone"
+            android:title="@string/pref_remove_phone"
+            android:summary="@string/pref_remove_phone_summary" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remove_lock"
+            android:title="@string/pref_remove_lock"
+            android:summary="@string/pref_remove_lock_summary" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remove_camera"
+            android:title="@string/pref_remove_camera"
+            android:summary="@string/pref_remove_camera_summary" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remove_microphone"
+            android:title="@string/pref_remove_microphone"
+            android:summary="@string/pref_remove_microphone_summary" />
+    </PreferenceCategory>
 </PreferenceScreen>

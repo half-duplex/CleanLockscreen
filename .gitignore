@@ -1,6 +1,8 @@
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
 .DS_Store
-/build
+desktop.ini
+local.properties
+*.apk
+*.iml
+.idea/
+.gradle/
+build/
