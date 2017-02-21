@@ -15,7 +15,6 @@ import android.graphics.Canvas;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -45,12 +44,17 @@ public class CleanLockscreen implements IXposedHookZygoteInit, IXposedHookInitPa
             packageName = "com.android.systemui";
 
         MODULE_PATH = startupParam.modulePath;
+        if(MODULE_PATH == null){
+            XposedBridge.log("CleanLockscreen modulePath is null!");
+        }
         prefs = new XSharedPreferences(CleanLockscreen.class.getPackage().getName());
 
         // Remove emergency call text
         if (prefs.getBoolean("remove_emergency", false)) {
             XResources.setSystemWideReplacement("android:string/lockscreen_emergency_call", "");
         }
+
+        XposedBridge.log("CleanLockscreen initZygote complete");
     }
 
     @Override
@@ -141,15 +145,17 @@ public class CleanLockscreen implements IXposedHookZygoteInit, IXposedHookInitPa
             );
         }
 
-        // Lock icon
         if(prefs.getBoolean("remove_lock", true)) { // goes with unlocked icon and setBackground below
+            // Lock icon
             resparam.res.setReplacement(packageName, "drawable", "ic_lock_24dp",
                     modRes.fwd(R.drawable.empty)
             );
-        }
-        // Unlocked icon
-        if(prefs.getBoolean("remove_lock", true)) {
+            // Unlocked icon
             resparam.res.setReplacement(packageName, "drawable", "ic_lock_open_24dp",
+                    modRes.fwd(R.drawable.empty)
+            );
+            // Fingerprint icon
+            resparam.res.setReplacement(packageName, "drawable", "ic_fingerprint",
                     modRes.fwd(R.drawable.empty)
             );
         }
